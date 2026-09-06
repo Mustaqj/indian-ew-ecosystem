@@ -1,0 +1,455 @@
+<title>Indian EW Ecosystem</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --ground:#f2f5f8; --panel:#ffffff; --panel-2:#f7f9fb; --sunk:#eaeff4; --raise:#ffffff;
+  --ink:#0f1720; --ink-2:#48586a; --ink-3:#7a8896; --line:#e1e7ed; --line-2:#c8d3dd;
+  --acc:#17569c; --acc-soft:#e4edf7;
+  --s1:#123f70; --s2:#2b6ba8; --s3:#6fa3d2; --s4:#bcd6ec; --s0:#9aa7b4;
+  --ok:#1a6b3c; --warn:#8a6410; --bad:#b03a30; --mute:#6b7a89;
+  --ui:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+  --disp:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0b1017; --panel:#121a23; --panel-2:#17212c; --sunk:#0d141b; --raise:#1c2732;
+  --ink:#e6edf4; --ink-2:#9fb0c1; --ink-3:#6b7d8e; --line:#1e2a36; --line-2:#2e3e4d;
+  --acc:#5da3e0; --acc-soft:#132a41;
+  --s1:#7fb9ec; --s2:#4d8fc9; --s3:#2f6494; --s4:#1d4262; --s0:#697a89;
+  --ok:#4bab72; --warn:#c99b3a; --bad:#dd6b60; --mute:#7e8f9e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.011em;text-wrap:balance}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.lab{font-family:var(--ui);font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-3)}
+
+.mast{position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:1px solid var(--line-2)}
+.mrow{max-width:1400px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:baseline;gap:11px;margin-right:auto}
+.brand h1{font-size:19px;font-weight:600;letter-spacing:-.012em}
+.brand .cnt{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.mast nav{display:flex;gap:2px}
+.mast nav a{font-size:13px;color:var(--ink-2);text-decoration:none;padding:7px 11px;border-radius:3px}
+.mast nav a:hover{color:var(--ink);background:var(--panel-2)}
+@media(max-width:1040px){.mast nav{display:none}}
+.tgl{background:none;border:1px solid var(--line-2);border-radius:3px;color:var(--ink-2);width:32px;height:28px;cursor:pointer;display:grid;place-items:center;padding:0}
+.tgl:hover{color:var(--acc);border-color:var(--acc)}
+.tgl svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round}
+
+.hero{background:var(--panel);border-bottom:1px solid var(--line)}
+.hin{max-width:1400px;margin:0 auto;padding:26px 24px}
+
+.hin h2{font-size:24px;letter-spacing:-.018em;margin-bottom:11px}
+.hin p.std{margin:0 0 12px;color:var(--ink-2);font-size:15px;max-width:96ch;line-height:1.6}
+.hin p.std:last-of-type{margin-bottom:0}
+.srcmix{display:flex;flex-wrap:wrap;gap:0 26px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.srcmix div{display:flex;align-items:baseline;gap:7px;font-size:12.5px;color:var(--ink-3);padding:3px 0}
+.srcmix b{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--acc)}
+.byline{margin-top:16px;padding-top:13px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3);display:flex;gap:20px;flex-wrap:wrap}
+.byline b{color:var(--ink-2);font-weight:600}
+
+.wrap{max-width:1400px;margin:0 auto;padding:0 24px 80px}
+section{margin-top:30px;scroll-margin-top:70px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:12px}
+.sh h2{font-size:18px}
+.sh p{margin:0;font-size:13.5px;color:var(--ink-3);max-width:62ch}
+.p{background:var(--panel);border:1px solid var(--line);border-radius:4px}
+
+.readout{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line);border-radius:4px;background:var(--panel);margin-top:22px;overflow:hidden}
+.readout>div{padding:13px 16px;border-right:1px solid var(--line)}
+.readout>div:last-child{border-right:0}
+.readout .v{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.readout .k{margin-top:5px;font-size:12.5px;color:var(--ink-2);font-weight:500}
+.readout .n{font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+@media(max-width:1100px){.readout{grid-template-columns:repeat(3,1fr)}.readout>div{border-bottom:1px solid var(--line)}}
+@media(max-width:620px){.readout{grid-template-columns:repeat(2,1fr)}}
+
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media(max-width:1060px){.g2{grid-template-columns:1fr}}
+.pad{padding:17px 19px}
+.pad h3{font-size:15px}
+.pad .cap{font-size:13px;color:var(--ink-3);margin:6px 0 15px;line-height:1.5;max-width:60ch}
+.bars{display:flex;flex-direction:column;gap:7px}
+.brow{display:grid;grid-template-columns:122px 1fr 32px;gap:11px;align-items:center}
+.brow .nm{font-size:13px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.brow .tr{height:15px;background:var(--sunk);border-radius:2px;position:relative;overflow:hidden}
+.brow .fi{position:absolute;inset:0 auto 0 0;background:var(--acc)}
+.brow .vv{font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.axn{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:10px;border-top:1px solid var(--line);padding-top:6px;display:flex;justify-content:space-between}
+
+table.mx{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:11px}
+table.mx th{font-weight:500;color:var(--ink-3);font-size:10px;padding:5px 4px;text-align:center;vertical-align:bottom;line-height:1.25}
+table.mx th.rh{text-align:right;white-space:nowrap;padding-right:10px;font-size:11px;color:var(--ink-2);font-family:var(--ui)}
+table.mx td{padding:0;text-align:center;border:1px solid var(--panel)}
+table.mx td .cell{height:27px;display:grid;place-items:center;font-variant-numeric:tabular-nums;font-weight:500}
+table.mx td.z .cell{color:var(--ink-3);opacity:.35}
+
+.cov{display:grid;grid-template-columns:118px repeat(5,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.cov>div{background:var(--panel);padding:9px 10px}
+.cov .hd{font-size:11.5px;color:var(--ink-3);text-align:center;font-weight:500}
+.cov .rh{font-size:13px;font-weight:600;display:flex;align-items:center;color:var(--ink-2)}
+.cov .c{text-align:center}
+.cov .c .num{font-family:var(--mono);font-size:17px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.cov .c .strip{display:flex;gap:1px;height:4px;margin-top:6px}
+.cov .c.empty .num{color:var(--ink-3);opacity:.3}
+
+.tl{display:flex;align-items:stretch;gap:3px;height:132px}
+.tl .col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid var(--line-2)}
+.tl .seg{background:var(--acc);min-height:3px;border-radius:2px 2px 0 0}
+.tl .cn{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);text-align:center;padding-bottom:3px}
+.tlx{display:flex;gap:3px;margin-top:5px;padding-top:4px}
+.tlx span{flex:1;font-family:var(--mono);font-size:9px;color:var(--ink-3);text-align:center;overflow:hidden}
+</style>
+<style>
+/* ---------- catalogue ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 15px;border-bottom:1px solid var(--line);background:var(--panel-2);position:sticky;top:56px;z-index:20}
+.srch{flex:1;min-width:210px;font-size:13.5px;padding:8px 11px;background:var(--panel);border:1px solid var(--line-2);border-radius:3px;color:var(--ink)}
+.srch::placeholder{color:var(--ink-3)}
+.fb{font-size:12.5px;padding:6px 11px;border:1px solid var(--line-2);border-radius:3px;background:var(--panel);color:var(--ink-2);cursor:pointer}
+.fb:hover{color:var(--ink);border-color:var(--ink-3)}
+.fb[aria-pressed="true"]{color:#fff;background:var(--acc);border-color:var(--acc)}
+.fgrp{display:flex;gap:3px;align-items:center}.fgrp>span{margin-right:3px}
+.cat{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:1px;background:var(--line)}
+.card{background:var(--panel);padding:14px 15px;display:flex;flex-direction:column;gap:8px;cursor:pointer;text-align:left;border:0;font:inherit;color:inherit;position:relative}
+.card:hover{background:var(--panel-2)}
+.card:hover .nm{color:var(--acc)}
+.card:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.card .row1{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card .nm{font-size:16px;font-weight:600;line-height:1.2;letter-spacing:-.012em}
+.card .aka{font-size:12px;color:var(--ink-3);margin-top:2px}
+.card .role{font-size:12.5px;color:var(--ink-2);line-height:1.35;flex:1}
+.card .foot{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:auto;padding-top:7px;border-top:1px solid var(--line)}
+.card .mfr{font-size:12px;color:var(--ink-3);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%}
+.tag{font-family:var(--ui);font-size:11px;font-weight:500;padding:2px 7px;border:1px solid var(--line-2);border-radius:3px;color:var(--ink-2);white-space:nowrap}
+.tag.pil{border-color:var(--acc);color:var(--acc)}
+.st{font-family:var(--ui);font-size:11px;padding:2px 8px;border-radius:3px;white-space:nowrap;font-weight:600}
+.cf{font-family:var(--ui);font-size:11px;font-weight:500;padding:2px 7px;border-radius:3px;border:1px solid;white-space:nowrap}
+.cf-high{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.cf-med{color:var(--mute);border-color:var(--line-2)}
+.cf-low{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.empty{padding:40px;text-align:center;font-size:14px;color:var(--ink-3);background:var(--panel)}
+
+/* ---------- modal ---------- */
+.ov{position:fixed;inset:0;background:color-mix(in srgb,#000 62%,transparent);z-index:90;display:none;align-items:flex-start;justify-content:center;padding:34px 20px;overflow-y:auto}
+.ov.on{display:flex}
+.mod{background:var(--panel);border:1px solid var(--line-2);max-width:960px;width:100%;box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.mhd{padding:17px 22px;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:flex-start;position:sticky;top:0;background:var(--panel);z-index:3}
+.mhd h3{font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.mhd .aka{font-size:13.5px;color:var(--ink-3);margin-top:5px}
+.mhd .eb{display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap;align-items:center}
+.mx2{margin-left:auto;display:flex;gap:5px;align-items:center}
+.nb{background:var(--panel);border:1px solid var(--line-2);border-radius:3px;color:var(--ink-2);width:31px;height:29px;cursor:pointer;font-size:14px;line-height:1;padding:0}
+.nb:hover{color:var(--ink);border-color:var(--acc)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.tile{background:var(--panel-2);padding:11px 14px}
+.tile .k{font-size:11.5px;color:var(--ink-3);font-weight:500}
+.tile .v{font-family:var(--mono);font-size:17px;font-weight:600;margin-top:4px;line-height:1.2;letter-spacing:-.02em}
+.mbody{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:0}
+@media(max-width:820px){.mbody{grid-template-columns:1fr}}
+.mcol{padding:18px 22px;display:flex;flex-direction:column;gap:17px}
+.mcol+.mcol{border-left:1px solid var(--line);background:var(--panel-2)}
+@media(max-width:820px){.mcol+.mcol{border-left:0;border-top:1px solid var(--line)}}
+.blk h4{font-size:12px;letter-spacing:.01em;color:var(--ink-3);font-weight:600;margin-bottom:8px}
+.blk p{margin:0;font-size:14px;line-height:1.6;color:var(--ink-2)}
+.blk p.lead{color:var(--ink);font-size:14.5px}
+.sp{display:grid;grid-template-columns:1fr auto;gap:5px 14px;font-size:13px}
+.sp dt{color:var(--ink-2)}
+.sp dd{margin:0;font-family:var(--mono);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+/* supply chain */
+.chain{display:flex;flex-direction:column;gap:0}
+.node{border:1px solid var(--line-2);background:var(--panel);padding:8px 11px}
+.node .r{font-size:11px;font-weight:600;color:var(--acc)}
+.node .t{font-size:13px;margin-top:3px;line-height:1.35}
+.node.nr .t{color:var(--ink-3);font-style:italic}
+.arw{height:15px;display:grid;place-items:center;color:var(--line-2);font-size:11px;font-family:var(--mono)}
+/* ladder */
+.lad{display:flex;gap:2px}
+.lad div{flex:1;padding:7px 4px;text-align:center;font-size:11px;background:var(--sunk);color:var(--ink-3);border-bottom:2px solid var(--line-2)}
+.lad div.on{background:var(--acc-soft);color:var(--ink);border-bottom-color:var(--acc);font-weight:600}
+.lad div.done{color:var(--ink-2);border-bottom-color:var(--acc)}
+/* value bar */
+.vbar{height:16px;background:var(--sunk);position:relative;margin-top:6px}
+.vbar i{position:absolute;inset:0 auto 0 0;background:var(--acc);display:block}
+.vsc{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-top:4px}
+/* year strip */
+.yst{display:flex;gap:1px;margin-top:6px}
+.yst span{flex:1;height:9px;background:var(--sunk)}
+.yst span.on{background:var(--acc)}
+.mfoot{border-top:1px solid var(--line);padding:13px 22px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3)}
+.mfoot a{color:var(--acc);text-decoration:none;border-bottom:1px solid currentColor}
+.pips{display:inline-flex;gap:2px;margin:0 4px}
+.pip{width:11px;height:5px;background:var(--line-2)}
+.pip.on{background:var(--acc)}
+.prose{padding:18px 20px}
+.prose p{margin:0 0 12px;max-width:80ch;color:var(--ink-2);font-size:14px;line-height:1.65}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--ink);font-weight:600}
+.prose em{font-style:italic;color:var(--ink)}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line-2);font-size:12.5px;color:var(--ink-3);line-height:1.7}
+</style>
+
+<div class="mast"><div class="mrow">
+  <div class="brand"><h1>Indian EW Ecosystem</h1><span class="cnt" id="hcnt">— products</span></div>
+  <nav><a href="#catalogue">Catalogue</a><a href="#base">Industrial base</a></nav>
+  <button class="tgl" id="tgl" aria-label="Switch colour theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg></button>
+</div></div>
+
+<div class="hero"><div class="hin">
+  <h2>Indian EW Ecosystem</h2>
+  <p class="std">Everything here comes from the public domain: Ministry of Defence and Press Information Bureau releases, DRDO and ISRO publications, defence public-sector product literature, and established defence trade press. No classified, restricted or internal material has been used. Nothing is inferred where the public record is silent, so fields that open sourcing does not support are marked "not reported" rather than estimated, and every entry carries a named source and a confidence grade.</p>
+  <div class="srcmix" id="srcmix"></div>
+</div></div>
+
+<div class="wrap">
+  <div class="readout" id="readout"></div>
+
+  <section id="catalogue">
+    <div class="sh"><div><h2>Catalogue</h2></div>
+      <p>Click any card for the full entry. Search covers designation, alias, role, developer, prime, customer, platform and notes.</p></div>
+    <div class="p">
+      <div class="filters">
+        <input class="srch" id="q" type="search" placeholder="Search by system, agency, platform or capability" aria-label="Search catalogue">
+        <div class="fgrp" id="fpil"><span class="lab">Pillar</span></div>
+        <div class="fgrp" id="fdom"><span class="lab">Domain</span></div>
+        <div class="fgrp" id="fst"><span class="lab">Status</span></div>
+        <button class="fb" id="clr">Clear</button>
+      </div>
+      <div class="cat" id="cat"></div>
+      <div style="padding:9px 15px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink-3)">
+        Showing <span id="rc">0</span> of <span id="rt">0</span> products
+      </div>
+    </div>
+  </section>
+  <section id="base">
+    <div class="sh"><div><h2>Who develops, who builds</h2></div>
+      <p>Counted by prime production agency and by developing laboratory. Foreign primes are included where the system is in Indian service.</p></div>
+    <div class="g2">
+      <div class="p pad"><h3>Prime manufacturers by systems</h3>
+        <p class="cap">Entries naming each organisation as prime production agency. Where several partners are named, the entry is credited to the first-named prime.</p>
+        <div class="bars" id="mbars"></div>
+        <div class="axn"><span>0</span><span id="mmax">—</span></div>
+      </div>
+      <div class="p pad"><h3>Developer to prime</h3>
+        <p class="cap">Rows are developing agencies, columns are primes. Shading is the number of systems on that pairing.</p>
+        <div style="overflow-x:auto"><table class="mx" id="mx"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sources">
+    <div class="sh"><div><h2>Sources</h2></div>
+      <p>Every source cited, with the number of entries resting on it.</p></div>
+    <div class="p" style="padding:12px 16px"><div id="srcs" style="columns:2;column-gap:26px"></div></div>
+  </section>
+
+  <footer>
+    Indian EW Ecosystem, revision 1.0, compiled 6 September 2026. 59 systems across four C4ISR pillars and five operating domains, from public sources only.<br>
+    No classified, restricted or non-public material was used. Confidence grades describe sourcing quality, not system capability.
+  </footer>
+</div>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="mtitle"><div class="mod" id="mod"></div></div>
+<script>
+const REC = [{"n":"Samyukta","a":"Project Samyukta","p":"EW","d":"Land","r":"Mobile integrated corps-level EW system","dev":"DLRL Hyderabad (DRDO), with Corps of Signals","mfr":"BEL, ECIL, Tata Power SED, Data Patterns (~40 sub-vendors)","st":"In service","ioc":"2004","note":"India's first large indigenous ground EW system: surveillance, interception, direction finding, position fixing and jamming from HF to millimetre wave. Rides on ~145 mobile vehicles and covers roughly 150 km x 70 km. C2 software written domestically to work around post-1998 US sanctions.","src":"https://en.wikipedia.org/wiki/Samyukta_electronic_warfare_system","cf":"med","cust":"Indian Army (Corps of Signals)","plat":"~145 mobile vehicles, corps zone","vend":"BEL; ECIL; Tata Power SED; CMC; Data Patterns; ~40 sub-vendors","val":0,"valn":"","qty":"","specs":[["Spectrum","HF to millimetre wave"],["Area covered","~150 x 70 km"],["Vehicles","~145"]]},{"n":"Project Himshakti","a":"Himashakti","p":"EW","d":"Land","r":"Integrated EW system for high-altitude areas","dev":"DLRL Hyderabad (DRDO) — lab not named in the release","mfr":"BEL Hyderabad","st":"Ordered","ioc":"2023","note":"MoD signed a Rs 3,000 crore contract with BEL on 24 March 2023 for two Integrated EW Systems under Buy (Indian-IDDM), tailored to mountain terrain. Expected to generate ~300,000 man-days across BEL's MSME supply chain.","src":"https://pib.gov.in/PressReleasePage.aspx?PRID=1910337","cf":"high","cust":"Indian Army","plat":"High-altitude / mountain formations","vend":"BEL Hyderabad + MSME supply chain","val":3000,"valn":"Rs 3,000 cr, 24 Mar 2023","qty":"2 systems","specs":[["Systems ordered","2"],["Work generated","~300,000 man-days"]]},{"n":"Sangraha","a":"-","p":"EW","d":"Naval","r":"Naval ESM/ECM suite family","dev":"DLRL Hyderabad (DRDO), joint with Indian Navy","mfr":"BEL","st":"In service","ioc":"not reported","note":"Modular EW family for detecting, intercepting and classifying radar emissions, fielded in ship-borne, helicopter-borne and vehicle configurations. Being supplanted on capital ships by Shakti.","src":"https://www.spslandforces.com/story/?id=698&h=Electronic-Warfare-Denying-Electromagnetic-Advantage-to-Enemy","cf":"med","cust":"Indian Navy","plat":"Ships, helicopters, vehicles","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Configurations","Ship / heli / vehicle"]]},{"n":"Shakti","a":"Advanced Electronic Warfare Suite (Navy)","p":"EW","d":"Naval","r":"Shipborne EW suite for capital warships","dev":"DLRL Hyderabad (DRDO)","mfr":"BEL, with 50+ MSMEs","st":"In service","ioc":"2021","note":"Handed to the Chief of Naval Staff on 19 Nov 2021; intercepts, classifies and jams conventional and modern radars. First fitted on INS Visakhapatnam then INS Vikrant. 12 systems ordered at Rs 1,805 crore; a further 11 contracted 13 Feb 2024 for Rs 2,269.54 crore for P-15B, P-17A and Talwar follow-on ships.","src":"https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1773020","cf":"high","cust":"Indian Navy","plat":"INS Visakhapatnam, INS Vikrant, P-15B, P-17A, Talwar follow-on","vend":"BEL + 50 MSMEs","val":1805,"valn":"Rs 1,805 cr (12 units) + Rs 2,269.54 cr (11 units, Feb 2024)","qty":"23 systems across two contracts","specs":[["First fit","INS Visakhapatnam"],["Units contracted","23"]]},{"n":"Maareech","a":"Advanced Torpedo Defence System","p":"EW","d":"Naval","r":"Ship-launched acoustic torpedo decoy","dev":"NSTL Visakhapatnam and NPOL Kochi (DRDO)","mfr":"BEL","st":"In service","ioc":"2020","note":"Inducted 26 June 2020 after user evaluation trials met Naval Staff Qualification Requirements. Detects an incoming torpedo and decoys it away; can be fired from all frontline warships.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=1634460","cf":"high","cust":"Indian Navy","plat":"All frontline warships","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Role","Torpedo decoy"]]},{"n":"Kavach Mod II","a":"Kavach chaff decoy system","p":"EW","d":"Naval","r":"Shipborne chaff rocket decoy","dev":"Ordnance Factory Board (design authority)","mfr":"MTPF Mumbai (launchers), Ammunition Factory Khadki (rockets), BEL (fire control)","st":"In service","ioc":"2012","note":"Fires silver-coated glass-fibre chaff in long (12 km), medium (5 km) and short (1 km) range variants to seduce radar-homing anti-ship missiles. Standard on Kolkata, Visakhapatnam and Kamorta classes and INS Vikrant.","src":"https://en.wikipedia.org/wiki/Kavach_(anti-missile_system)","cf":"med","cust":"Indian Navy","plat":"Kolkata, Visakhapatnam and Kamorta classes; Deepak-class tankers; INS Vikrant","vend":"MTPF Mumbai (launchers); Ammunition Factory Khadki (rockets); BEL (fire control); AVNL","val":0,"valn":"","qty":"","specs":[["Long range","12 km"],["Medium range","5 km"],["Short range","1 km"]]},{"n":"MR-MOCR","a":"Medium Range Microwave Obscurant Chaff Rocket","p":"EW","d":"Naval","r":"Microwave obscurant rocket for asset masking","dev":"Defence Laboratory Jodhpur (DRDO)","mfr":"not reported","st":"In service","ioc":"2024","note":"Handed to the Indian Navy 26 June 2024. Deploys microwave-absorbing microfibres to form an obscurant cloud defeating RF seekers; trials showed ~90% reduction in radar cross-section of a protected aerial target. Masking rather than seduction, complementing Kavach.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2028794","cf":"high","cust":"Indian Navy","plat":"Surface combatants","vend":"not reported","val":0,"valn":"","qty":"","specs":[["RCS reduction","~90% in trials"]]},{"n":"Tarang","a":"Tarang RWR","p":"EW","d":"Air","r":"Radar warning receiver for combat aircraft","dev":"DARE / CASDIC Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"not reported","note":"Intercepts and identifies acquisition, target-tracking and missile-guidance radars, giving audio-visual warning, cueing the self-protection jammer and triggering the countermeasures dispenser. Fielded across multiple IAF and Navy platforms.","src":"https://en.wikipedia.org/wiki/Combat_Aircraft_Systems_Development_%26_Integration_Centre","cf":"med","cust":"IAF and Indian Navy","plat":"Multiple fixed- and rotary-wing types","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"Dhruti DR-118","a":"DR-118; part of Swayam Raksha Kavach","p":"EW","d":"Air","r":"All-digital radar warning receiver for fighters","dev":"DARE / CASDIC Bengaluru (DRDO)","mfr":"BEL (technology transferred 2022)","st":"Trials","ioc":"-","note":"Four wideband receiver channels giving 360-degree coverage, processing over a million pulses per second. Replaces the analogue RWR on the Su-30MKI; 129 units were part of the Rs 3,700 crore BEL contract of March 2023. Deployment reported as targeted for end-2026.","src":"https://en.wikipedia.org/wiki/Combat_Aircraft_Systems_Development_%26_Integration_Centre","cf":"med","cust":"Indian Air Force","plat":"Su-30MKI","vend":"BEL (ToT 2022)","val":0,"valn":"","qty":"129 units in the Mar 2023 BEL contract","specs":[["Receiver channels","4 wideband"],["Coverage","360 deg"],["Pulse rate","1M+ pulses/sec"]]},{"n":"D-29","a":"-","p":"EW","d":"Air","r":"Integrated RWR/ESM/ECM suite for the MiG-29","dev":"DARE / CASDIC Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"not reported","note":"Combines a Unified Receiver Exciter Processor with a solid-state transmit/receive unit and active array for radar warning, electronic support and jamming on the MiG-29 UPG. Flight evaluation completed at Nashik and Gwalior; six aircraft modified. Design lineage feeds the later SRK suite.","src":"https://en.wikipedia.org/wiki/Combat_Aircraft_Systems_Development_%26_Integration_Centre","cf":"med","cust":"Indian Air Force","plat":"MiG-29 UPG","vend":"BEL","val":0,"valn":"","qty":"6 aircraft modified","specs":[]},{"n":"Advanced Self Protection Jammer","a":"ASPJ pod","p":"EW","d":"Air","r":"Podded AESA self-protection jammer","dev":"DLRL Hyderabad (DRDO)","mfr":"BEL (production agency)","st":"Development","ioc":"-","note":"Active phased-array pod using ultra-wideband DRFM against airborne multi-role, target-acquisition, fire-control and AAA radars, with 16-32 T/R units in Tejas fits. In flight test since 2023; high-voltage power supply technology transferred to industry December 2025. The IAF issued an RFI in late 2025 for 100 pods for the Su-30MKI on a 36-month delivery.","src":"https://en.wikipedia.org/wiki/Defence_Electronics_Research_Laboratory","cf":"med","cust":"Indian Air Force","plat":"Tejas; Su-30MKI (RFI for 100 pods)","vend":"BEL","val":0,"valn":"","qty":"","specs":[["T/R units","16-32 (Tejas fit)"],["Technique","Ultra-wideband DRFM"],["RFI quantity","100 pods"]]},{"n":"Mi-17 V5 EW Suite","a":"Mi-17 V5 EW Suite and modification kits","p":"EW","d":"Air","r":"Helicopter self-protection EW suite","dev":"not reported","mfr":"BEL Bengaluru","st":"Ordered","ioc":"2025","note":"MoD signed a Rs 2,385.36 crore contract with BEL on 7 April 2025 under Buy (Indian-IDDM) for EW suites plus aircraft modification kits, to raise Mi-17 V5 survivability. Quantity and subsystem breakdown not disclosed.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2119805&reg=3&lang=2","cf":"high","cust":"Indian Air Force","plat":"Mi-17 V5","vend":"BEL Bengaluru","val":2385.36,"valn":"Rs 2,385.36 cr, 7 Apr 2025","qty":"","specs":[]},{"n":"EMISAT","a":"Kautilya ELINT payload","p":"EW","d":"Space","r":"Space-based ELINT satellite","dev":"DRDO with ISRO","mfr":"ISRO (IMS-2 bus); DRDO payload","st":"In service","ioc":"2019","note":"Launched 1 April 2019 on PSLV-C45 into a 748 km sun-synchronous orbit; 436 kg on the IMS-2 bus with 800 W. Officially tasked with electromagnetic spectrum measurement, widely assessed to carry the Kautilya ELINT package to detect and characterise foreign military radar emissions.","src":"https://directory.eoportal.org/satellite-missions/emisat","cf":"med","cust":"DRDO / tri-service","plat":"IMS-2 satellite bus, PSLV-C45","vend":"ISRO","val":0,"valn":"","qty":"","specs":[["Mass","436 kg"],["Orbit","748 km SSO"],["Power","800 W"],["Inclination","98.4 deg"]]},{"n":"Netra ESM/CSM suite","a":"Netra Mk-1 electronic and communication support measures","p":"EW","d":"Air","r":"Airborne ESM/COMINT suite","dev":"CABS Bengaluru (DRDO), CSM by DLRL Hyderabad","mfr":"BEL","st":"In service","ioc":"2017","note":"360-degree ESM coverage with 2-degree RMS direction accuracy, 1 MHz frequency accuracy and a library of up to 3,000 emitters. The CSM element analyses and records intercepted communications in flight and post-flight.","src":"https://en.wikipedia.org/wiki/DRDO_AEW&CS","cf":"med","cust":"Indian Air Force","plat":"Netra Mk1 (Embraer ERJ-145I)","vend":"BEL","val":0,"valn":"","qty":"","specs":[["DF accuracy","2 deg RMS"],["Freq accuracy","1 MHz"],["Emitter library","up to 3,000"]]},{"n":"D4 Anti-Drone System","a":"Drone Detect, Deter and Destroy","p":"EW","d":"Joint","r":"Counter-UAS with RF/GNSS soft kill and laser hard kill","dev":"DRDO (lab not reported)","mfr":"BEL","st":"In service","ioc":"not reported","note":"Real-time search, detection, tracking and neutralisation of micro and small UAVs. Radar plus EO/IR with laser rangefinder and RF direction finding; soft kill by communications jamming and GPS spoofing, hard kill by laser DEW, tied together by a C3 centre.","src":"https://bel-india.in/product/anti-drone-system/","cf":"high","cust":"Tri-service and central armed police","plat":"Static and vehicle-mounted","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Soft kill","Comms jamming, GPS spoofing"],["Hard kill","Laser DEW"]]},{"n":"SAKSHAM","a":"Situational Awareness for Kinetic Soft and Hard Kill Assets Management","p":"EW","d":"Land","r":"AI-enabled counter-UAS C2 and soft-kill grid","dev":"Indian Army with BEL","mfr":"BEL","st":"In service","ioc":"2025","note":"AI-driven C2 layer fusing sensors and integrating soft-kill effectors (RF jamming, GNSS spoofing) with kinetic and directed-energy hard kill up to 3,000 m AGL. Accepted 2025 under Fast Track Procurement; further order placed on BEL December 2025 with sector-wide deployment planned within a year.","src":"https://en.wikipedia.org/wiki/SAKSHAM","cf":"med","cust":"Indian Army","plat":"Sector air-defence grids","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Airspace covered","to 3,000 m AGL"]]},{"n":"Rudram-1","a":"NGARM (New Generation Anti-Radiation Missile)","p":"EW","d":"Air","r":"Air-launched anti-radiation missile for SEAD","dev":"DRDL Hyderabad (DRDO), with ARDE and DLRL","mfr":"Adani Defence & Aerospace, with BDL and BEL","st":"In service","ioc":"2022","note":"Destroys surveillance radars, communication stations and bunkers. The DLRL passive homing head uses MMIC technology to detect RF emissions out to 100 km across D-J bands. Carried by the Su-30MKI; IAF proposal of about Rs 1,400 crore with AoN granted December 2022. Rudram-2 and -3 in development.","src":"https://en.wikipedia.org/wiki/Rudram_(missile)","cf":"med","cust":"Indian Air Force","plat":"Su-30MKI","vend":"Adani Defence; BDL; BEL","val":1400,"valn":"~Rs 1,400 cr IAF proposal, AoN Dec 2022","qty":"","specs":[["Seeker range","up to 100 km"],["Bands","D to J"]]},{"n":"Divya Drishti","a":"-","p":"EW","d":"Joint","r":"Passive ESM / emitter fingerprinting","dev":"DRDO (lab not reported)","mfr":"not reported","st":"In service","ioc":"not reported","note":"Reported as an ESM system used for sensor fingerprinting in static and mobile configurations. CAUTION: thinly sourced, and the same name was used for an unrelated Indian Army AI surveillance exercise in Sikkim in July 2025 — do not conflate the two.","src":"https://www.spslandforces.com/story/?id=698&h=Electronic-Warfare-Denying-Electromagnetic-Advantage-to-Enemy","cf":"low","cust":"not reported","plat":"Ground and airborne ESM upgrades","vend":"not reported","val":0,"valn":"","qty":"","specs":[]},{"n":"IACCS","a":"Integrated Air Command and Control System","p":"C2","d":"Air","r":"Automated air defence C4I / recognised air picture","dev":"Indian Air Force (concept), BEL R&D (integration)","mfr":"BEL","st":"In service","ioc":"2010","note":"Riding on AFNET, IACCS fuses IAF and civil radar, AEW&C and sensor feeds into a national air picture. PIB (Sep 2025) states it operated in unison with Akashteer and Trigun as a joint operational backbone during Operation Sindoor. Node count and programme value not officially reported.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2173013","cf":"high","cust":"Indian Air Force","plat":"IAF and civil radar, AEW&C and sensor feeds over AFNET","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Bearer network","AFNET"]]},{"n":"Akashteer","a":"Air Defence Control & Reporting System (ADC&RS)","p":"C2","d":"Land","r":"Army air defence control and engagement management","dev":"BEL, with DRDO and ISRO inputs","mfr":"BEL Ghaziabad","st":"In service","ioc":"2024","note":"MoD contracted BEL in March 2023 for about Rs 2,000 crore; 100 control centres handed over by 30 Sep 2024. Fuses Army AD radars, sensors and comms for automated low-level airspace control; credited with blunting drone and missile raids during Operation Sindoor. A 455-unit total with deliveries to April 2027 is reported in secondary sources only.","src":"https://raksha-anirveda.com/bel-delivers-akashteer-systems-to-army-boosts-air-defence/","cf":"med","cust":"Indian Army (Army Air Defence)","plat":"Army AD control centres","vend":"BEL Ghaziabad","val":2000,"valn":"~Rs 2,000 cr, Mar 2023","qty":"100 delivered by Sep 2024; 455 reported total","specs":[["Delivered","100 by 30 Sep 2024"],["Reported total","455 units"]]},{"n":"Trigun","a":"-","p":"C2","d":"Naval","r":"Navy operational picture / air-maritime C2 node","dev":"not reported","mfr":"not reported","st":"In service","ioc":"not reported","note":"Named by the Raksha Mantri in an official release as the Navy's element of the tri-service backbone alongside IACCS and Akashteer during Operation Sindoor. No official description of architecture, developer, manufacturer, cost or induction date exists. The thinnest-documented system in this register despite a high-confidence source.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2173013","cf":"high","cust":"Indian Navy","plat":"not reported","vend":"not reported","val":0,"valn":"","qty":"","specs":[]},{"n":"SANJAY","a":"Battlefield Surveillance System (Project Sanjay)","p":"C2","d":"Land","r":"Sensor fusion into a Common Surveillance Picture","dev":"Indian Army with BEL","mfr":"BEL","st":"In service","ioc":"2025","note":"Flagged off 24 Jan 2025; Rs 2,402 crore under Buy (Indian). Inducted to all operational Brigades, Divisions and Corps in three phases from March to October 2025. De-duplicates and fuses ground and aerial sensor inputs. Supersedes BEL's earlier div/corps-level Battlefield Surveillance System.","src":"https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2095712","cf":"high","cust":"Indian Army","plat":"All operational Brigades, Divisions and Corps","vend":"BEL","val":2402,"valn":"Rs 2,402 cr, Buy (Indian)","qty":"","specs":[["Rollout","3 phases, Mar-Oct 2025"]]},{"n":"CIDSS","a":"Command Information and Decision Support System","p":"C2","d":"Land","r":"Corps-level tactical C3I and decision support","dev":"CAIR Bengaluru (DRDO) with BEL","mfr":"BEL","st":"In service","ioc":"not reported","note":"A tactical wide-area data network of interconnected LAN nodes across a Corps zone, collecting, filtering, processing and displaying operational, intelligence and logistics information. The core node of the Army's Tac C3I family with ACCCS Shakti, BSS and ADC&RS. Contract value and induction date not reported.","src":"https://bel-india.in/product/command-information-and-decision-support-system-cidss/","cf":"high","cust":"Indian Army","plat":"Corps-zone LAN nodes","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"ACCCS Shakti","a":"Artillery Combat Command and Control System","p":"C2","d":"Land","r":"Artillery fire-control and combat C2","dev":"CAIR Bengaluru and ARDE (DRDO) with BEL","mfr":"BEL","st":"In service","ioc":"2009","note":"Dedicated to the Indian Army on 12 June 2009. Automates technical and tactical fire control across artillery formations and is one of the five pillars of the Army's Tactical C3I system.","src":"https://www.pib.gov.in/newsite/erelcontent.aspx?relid=49161&reg=3&lang=2","cf":"high","cust":"Indian Army (Regiment of Artillery)","plat":"Artillery formations","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"Battlefield Management System","a":"BMS (Make-I programme)","p":"C2","d":"Land","r":"Battalion-down digitisation of the tactical edge","dev":"Intended DAs: BEL+Rolta and L&T+Tata Power SED consortia","mfr":"not applicable","st":"Foreclosed","ioc":"-","note":"The Make-I BMS, intended to network the combat group down to the individual soldier, was foreclosed by MoD on funding and prioritisation grounds. Its functional gap is being addressed piecemeal by SANJAY, SAMBHAV and the SDR/TCS programmes. FLAG: no official MoD confirmation of the foreclosure was located.","src":"https://www.spslandforces.com/story/?id=481&h=Foreclosure-of-Armys-Battlefield-Management-System","cf":"med","cust":"Indian Army (intended)","plat":"Combat group to individual soldier (intended)","vend":"BEL+Rolta and L&T+Tata Power SED consortia","val":0,"valn":"","qty":"","specs":[]},{"n":"NC3I / IMAC Gurugram","a":"Upgrading to National Maritime Domain Awareness (NMDA)","p":"C2","d":"Naval","r":"National coastal surveillance fusion and maritime C2","dev":"Indian Navy with BEL","mfr":"BEL Bengaluru","st":"In service","ioc":"2014","note":"IMAC Gurugram is the hub of the NC3I network linking coastal radar and Navy/Coast Guard nodes. On 8 July 2025 the Navy signed a turnkey contract with BEL to upgrade NC3I to the AI-enabled NMDA system and convert IMAC into a Multi-Agency NMDA Centre. Contract value and timeline not disclosed.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2143191","cf":"high","cust":"Indian Navy and Indian Coast Guard","plat":"IMAC Gurugram hub, coastal radar chain","vend":"BEL Bengaluru","val":0,"valn":"","qty":"","specs":[]},{"n":"IUHDSS","a":"Integrated Underwater Harbour Defence and Surveillance System","p":"C2","d":"Naval","r":"Harbour underwater and surface threat detection and C2","dev":"IAI/ELTA Systems (Israel)","mfr":"IAI ELTA, with Indian integration support","st":"In service","ioc":"2016","note":"Coastal surveillance radars, diver-detection sonars and electro-optic sensors auto-fused into a common port-defence picture, detecting small boats, submersibles and divers. Deployed at Visakhapatnam, Mumbai, Karwar and Kochi. Contract value not disclosed; base-by-base induction dates are inconsistently reported.","src":"https://www.shephardmedia.com/news/naval-warfare/harbour-defence-system-delivered-india/","cf":"med","cust":"Indian Navy","plat":"Visakhapatnam, Mumbai, Karwar, Kochi","vend":"IAI ELTA with Indian integrators","val":0,"valn":"","qty":"","specs":[]},{"n":"AFNET","a":"Air Force Network","p":"COM","d":"Air","r":"IAF-wide secure IP digital information grid","dev":"IAF with BSNL, Cisco, HCL Infosystems","mfr":"BSNL (prime implementer)","st":"In service","ioc":"2010","note":"Dedicated to the nation 14 Sep 2010 at an estimated Rs 1,077 crore. An optical-fibre IP backbone with satellite overlay and radio extension to remote sites; the bearer network on which IACCS runs. Freed legacy IAF spectrum for civil telecom.","src":"https://www.pib.gov.in/newsite/PrintRelease.aspx?relid=65739&reg=3&lang=2","cf":"high","cust":"Indian Air Force","plat":"IAF-wide optical fibre, satellite and radio","vend":"BSNL; Cisco; HCL Infosystems","val":1077,"valn":"~Rs 1,077 cr, dedicated 14 Sep 2010","qty":"","specs":[]},{"n":"Network For Spectrum","a":"NFS; defence OFC network","p":"COM","d":"Joint","r":"Tri-service dedicated optical fibre backbone","dev":"DoT / MoD, executed by BSNL","mfr":"BSNL, with HFCL, STL and Aksh Optifibre as OFC suppliers","st":"In service","ioc":"2012","note":"Cabinet approved Rs 13,334 crore in July 2012 and a further Rs 11,330 crore in May 2018 — about Rs 24,664 crore total — for an alternate defence network in exchange for release of military spectrum. A Parliamentary panel has since flagged delays. Route length not stated officially.","src":"https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1532267","cf":"high","cust":"Tri-service","plat":"National defence OFC backbone","vend":"BSNL; HFCL; STL; Aksh Optifibre","val":24664,"valn":"Rs 13,334 cr (2012) + Rs 11,330 cr (2018)","qty":"","specs":[]},{"n":"ASCON Phase-IV","a":"Army Static Switched Communication Network Phase IV","p":"COM","d":"Land","r":"Army static strategic backbone network","dev":"Indian Army Corps of Signals / MoD","mfr":"ITI Limited","st":"In service","ioc":"2020","note":"Rs 7,796.39 crore turnkey contract with ITI Ltd on 1 Oct 2020, 36-month schedule, migrating from ATM to IP/MPLS and extending high-bandwidth links to forward posts along the IB, LC and LAC. About 80% indigenous content. Schedule slippage reported by a Parliamentary panel.","src":"https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=1660685&reg=3&lang=2","cf":"high","cust":"Indian Army","plat":"Static network to forward posts on IB, LC and LAC","vend":"ITI Limited","val":7796.39,"valn":"Rs 7,796.39 cr turnkey, 1 Oct 2020","qty":"","specs":[["Schedule","36 months"],["Indigenous content","~80%"]]},{"n":"SDR-Tac","a":"Software Defined Radio - Tactical","p":"COM","d":"Naval","r":"Shipborne four-channel multi-band tactical SDR","dev":"DEAL Dehradun, WESEE and CAIR Bengaluru with the Navy","mfr":"BEL","st":"In service","ioc":"2021","note":"MoD-BEL contract worth over Rs 1,000 crore signed 8 Feb 2021 for a four-channel, multi-mode, multi-band 19-inch rack-mountable shipborne SDR for ship-to-ship, ship-to-shore and ship-to-air voice and data, delivered over three years. Quantity not disclosed.","src":"https://pib.gov.in/Pressreleaseshare.aspx?PRID=1696177","cf":"high","cust":"Indian Navy","plat":"Surface combatants","vend":"BEL","val":1000,"valn":"Over Rs 1,000 cr, 8 Feb 2021","qty":"","specs":[["Channels","4"],["Form factor","19-inch rack"]]},{"n":"Army SDR (MANET)","a":"Combat Net Radio replacement","p":"COM","d":"Land","r":"Indigenous tactical MANET combat radio","dev":"DRDO with BEL","mfr":"BEL","st":"Ordered","ioc":"2025","note":"On 31 Oct 2025 the Army signed its first contract for indigenously designed and manufactured SDRs with high data rates and Mobile Ad hoc Network capability, replacing legacy Combat Net Radios. Value not stated officially; BEL's 30 Oct 2025 order disclosure of Rs 732 crore is reported in defence press.","src":"https://ddnews.gov.in/en/indian-army-signs-contract-to-procure-first-indigenously-designed-manufactured-software-defined-radios/","cf":"high","cust":"Indian Army","plat":"Tactical formations, replacing Combat Net Radio","vend":"BEL","val":732,"valn":"Rs 732 cr per BEL disclosure, 30 Oct 2025","qty":"","specs":[]},{"n":"IRSA 1.0","a":"Indian Radio Software Architecture","p":"COM","d":"Joint","r":"National SDR waveform-portability standard","dev":"DRDO with HQ IDS and the tri-services","mfr":"not applicable (standard)","st":"In service","ioc":"2025","note":"Released 7 Oct 2025 at DRDO Bhawan. Defines standardised interfaces, APIs, execution environments and waveform-portability mechanisms for Indian SDRs — India's answer to the US Software Communications Architecture — so Army, Navy, Air Force and industry radios can share waveforms.","src":"https://www.newsonair.gov.in/drdo-and-tri-services-unveil-irsa-1-0-to-standardize-military-communication","cf":"high","cust":"Tri-service and Indian industry","plat":"All Indian SDR programmes","vend":"not applicable","val":0,"valn":"","qty":"","specs":[]},{"n":"Tactical Communication System","a":"TCS (AREN replacement)","p":"COM","d":"Land","r":"Mobile tactical backbone for field formations","dev":"DRDO / Indian Army with industry","mfr":"BEL","st":"Development","ioc":"-","note":"Long-delayed replacement for the legacy AREN network. BEL unveiled a first prototype in December 2025; the programme remains pre-trials. No contract value or quantity has been announced.","src":"https://indianmasterminds.com/news/bel-unveils-first-prototype-tactical-communication-system-indian-army-166803/","cf":"med","cust":"Indian Army","plat":"Field formations, replacing AREN","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"SAMBHAV","a":"Secure Army Mobile Bharat Version","p":"COM","d":"Land","r":"End-to-end encrypted 5G-ready mobile ecosystem","dev":"Indian Army Corps of Signals with industry and academia","mfr":"not reported","st":"In service","ioc":"2024","note":"Indigenous hardened smartphone with indigenous OS and encrypted backbone, unveiled January 2024 and used for command-level communication during Operation Sindoor per the COAS in September 2025. FLAG: no official release located; sourcing is reputable press only.","src":"https://theprint.in/defence/encrypted-mobiles-with-exclusive-operating-system-how-army-is-moving-towards-secure-communication/1921412/","cf":"med","cust":"Indian Army","plat":"Command-level handsets","vend":"not reported","val":0,"valn":"","qty":"","specs":[]},{"n":"Link-II Mod III","a":"Indian Navy tactical data link","p":"COM","d":"Naval","r":"Indigenous naval tactical data exchange network","dev":"WESEE (Indian Navy) with BEL","mfr":"BEL","st":"In service","ioc":"not reported","note":"Data-exchange network by which ships, submarines and shore establishments exchange a near-real-time tactical picture, carrying text, imagery and voice/video over tactical radio and SATCOM bearers, with redundant processors and tactical consoles.","src":"https://bel-india.in/product/link-ii-mod-iii-system/","cf":"high","cust":"Indian Navy","plat":"Ships, submarines, shore establishments","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"GSAT-7R","a":"CMS-03; successor to GSAT-7 Rukmini","p":"COM","d":"Space","r":"Dedicated naval communication satellite","dev":"ISRO for the Indian Navy","mfr":"ISRO (launched on LVM3-M5)","st":"In service","ioc":"2025","note":"Launched 2 Nov 2025 on LVM3-M5; at 4,410 kg India's heaviest communication satellite to GTO, with UHF, S, C and Ku band payloads and a 15-year design life. Carries voice, video and data between ships, submarines, aircraft and Maritime Operations Centres out to about 2,000 km from the coast, replacing GSAT-7 Rukmini (2013).","src":"https://en.wikipedia.org/wiki/GSAT-7R","cf":"med","cust":"Indian Navy","plat":"LVM3-M5 launch; naval ships, submarines, aircraft, MOCs","vend":"ISRO","val":0,"valn":"","qty":"","specs":[["Mass","4,410 kg"],["Design life","15 years"],["Bands","UHF, S, C, Ku"],["Reach","~2,000 km from coast"]]},{"n":"Vayulink","a":"-","p":"COM","d":"Air","r":"Jam-resistant ad-hoc tactical data link with NavIC fallback","dev":"Indian Air Force (in-house)","mfr":"not reported","st":"In service","ioc":"2023","note":"IAF-developed ad-hoc data link giving encrypted position and traffic data, using NavIC messaging to keep a link alive where radio coverage fails through terrain masking or jamming. Displays nearby aircraft and friendly ground forces to reduce fratricide. Shown publicly at Aero India 2023; scale of fielding, cost and manufacturer not reported.","src":"https://theprint.in/india/iaf-develops-indigenous-vayulink-platform-for-jammer-proof-communication-with-base-station/1377868/","cf":"med","cust":"Indian Air Force","plat":"IAF aircraft and ground stations","vend":"not reported","val":0,"valn":"","qty":"","specs":[["Fallback bearer","NavIC messaging"]]},{"n":"Rohini 3D-MRSR","a":"3D-CAR family","p":"ISR","d":"Air","r":"3D medium-range ground-based air surveillance radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL Bengaluru/Ghaziabad","st":"In service","ioc":"2008","note":"Mechanically scanned pulse-Doppler S-band 3D radar for airspace surveillance and early warning at airbases, designed to work in a hostile EW environment. Rohini is the IAF variant of the 3D-CAR family, with Revathi (Navy) and Aslesha as siblings. Contract value and quantity not reported.","src":"https://drdo.gov.in/drdo/en/offerings/products/3-d-medium-range-surveillance-radar-airforce-rohini","cf":"high","cust":"Indian Air Force","plat":"Airbase air defence","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Band","S-band"],["Type","Pulse-Doppler 3D"]]},{"n":"Revathi","a":"3D-CAR naval variant","p":"ISR","d":"Naval","r":"Ship-borne 3D air and surface surveillance radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"2007","note":"Shipborne 3D radar with digital receiver and programmable signal processor; auto-tracks up to 150 targets, integrated IFF Mk XI, ECCM features and selectable 6/12/24 RPM antenna rotation. Fitted on Kamorta-class ASW corvettes and other platforms.","src":"https://drdo.gov.in/drdo/en/offerings/products/3d-surveillance-radar-indian-navy-revathi","cf":"high","cust":"Indian Navy","plat":"Kamorta-class ASW corvettes","vend":"BEL","val":0,"valn":"","qty":"","specs":[["Targets tracked","150"],["IFF","Mk XI"],["Rotation","6 / 12 / 24 RPM"]]},{"n":"Aslesha Mk-I","a":"3D Low Level Light Weight Radar","p":"ISR","d":"Air","r":"3D low-level lightweight air surveillance radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"not reported","note":"Multi-beam quadripod-mounted 3D surveillance radar for plains, deserts, mountain tops and high altitude; detects helicopters, fighters and UAVs at low altitude, networked or standalone. Open sources disagree on whether it is fully in service or still developmental.","src":"https://drdo.gov.in/drdo/en/offerings/products/3d-low-level-light-weight-radar-aslesha-mk-i","cf":"high","cust":"Indian Air Force","plat":"Quadripod mount; plains, desert, mountain and high altitude","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"Bharani Mk-I","a":"2D Low Level Light Weight Radar","p":"ISR","d":"Air","r":"Man-portable 2D low-level air surveillance radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"not reported","note":"Battery-powered modular 2D radar transportable by vehicle, animal, man-pack or helicopter. Provides early warning to air defence weapons against UAVs, helicopters and fixed-wing aircraft in mountainous terrain, with integral IFF and GPS/tactical map overlay.","src":"https://drdo.gov.in/drdo/en/offerings/products/2d-low-level-light-weight-radar-lllr-bharani-mk-i","cf":"high","cust":"Indian Air Force / Army AD","plat":"Vehicle, animal, man-pack or helicopter transportable","vend":"BEL","val":0,"valn":"","qty":"","specs":[]},{"n":"LLTR Ashwini","a":"Low-Level Transportable Radar","p":"ISR","d":"Air","r":"Transportable AESA low-level air surveillance radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL Ghaziabad","st":"Ordered","ioc":"2025","note":"MoD signed a Rs 2,906 crore capital acquisition contract with BEL Ghaziabad on 12 March 2025 for the IAF. An AESA phased-array radar tracking everything from high-speed fighters to slow UAVs and helicopters; reported coverage 30 m to 15 km altitude and about 200 km detection, with 360-degree rotation and staring modes. Quantity not disclosed.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2110849&reg=48&lang=2","cf":"high","cust":"Indian Air Force","plat":"Transportable ground sites","vend":"BEL Ghaziabad","val":2906,"valn":"Rs 2,906 cr, 12 Mar 2025","qty":"","specs":[["Detection","~200 km"],["Altitude","30 m to 15 km"],["Modes","360 deg rotation + staring"]]},{"n":"Arudhra MPR","a":"Medium Power Radar","p":"ISR","d":"Air","r":"4D multi-function medium power AESA radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"Ordered","ioc":"2023","note":"MoD signed contracts worth about Rs 3,700 crore with BEL on 23 March 2023 covering Arudhra MPRs (over Rs 2,800 crore) plus 129 DR-118 radar warning receivers, under Buy (Indian-IDDM). A 4D multi-function phased array with electronic steering in azimuth and elevation. Quantity not disclosed.","src":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=1910065&reg=48&lang=2","cf":"high","cust":"Indian Air Force","plat":"Ground surveillance sites","vend":"BEL","val":2800,"valn":"Over Rs 2,800 cr within a Rs 3,700 cr package, 23 Mar 2023","qty":"","specs":[["Type","4D AESA multi-function"]]},{"n":"Swathi WLR","a":"Weapon Locating Radar Mk-I and Mk-II","p":"ISR","d":"Land","r":"Counter-battery weapon locating radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"In service","ioc":"2017","note":"Mk-I plains variant on 8x8 Tatra trucks ordered in a reported Rs 1,605 crore contract for 30 systems. A lighter Mk-II mountain variant on two 6x6 Tatras was ordered December 2021 for six units, delivered by March 2023 and inducted August 2023, with about 50 km instrumented range. Also India's first major radar export, four units to Armenia in a reported $40m deal.","src":"https://www.spslandforces.com/experts-speak/?id=1045&h=Swathi-WLR-Mountain-Variant","cf":"med","cust":"Indian Army (Artillery); export to Armenia","plat":"8x8 Tatra (plains); two 6x6 Tatra (mountain)","vend":"BEL","val":1605,"valn":"Rs 1,605 cr for 30 systems; ~$40m Armenia export","qty":"30 plains + 6 mountain","specs":[["Instrumented range","~50 km (Mk-II)"],["Mountain variant","2 x 6x6, ~18 t each"]]},{"n":"Uttam AESA","a":"Uttam AESA MMR","p":"ISR","d":"Air","r":"Airborne X-band AESA fire control radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL, with HAL as integrator","st":"Development","ioc":"-","note":"X-band GaAs AESA with 912 T/R modules (a ~980-module Tejas Mk1A build is reported), over 150 km range and 50-target track with 4-target priority track. Technology transfer completed July 2023, over 125 developmental flights, CEMILAC cleared four stages of flight testing as of April 2025. Slated for the 97-aircraft Tejas Mk1A follow-on batch; no signed production contract located.","src":"https://en.wikipedia.org/wiki/Uttam_AESA_Radar","cf":"med","cust":"Indian Air Force","plat":"Tejas Mk1A (planned)","vend":"BEL; HAL integrator","val":0,"valn":"","qty":"","specs":[["T/R modules","912 (980 in Mk1A build)"],["Range","150+ km"],["Track","50 targets, 4 priority"],["Dev flights","125+"]]},{"n":"Atulya ADFCR","a":"Air Defence Fire Control Radar","p":"ISR","d":"Land","r":"Short-range air defence fire control radar","dev":"LRDE Bengaluru (DRDO)","mfr":"BEL","st":"Ordered","ioc":"2025","note":"MoD moved on 25 July 2025 to procure ADFCRs worth about Rs 2,000 crore for Army Air Defence regiments, to detect fighters, attack helicopters and drones. Performs surveillance, tracking, IFF classification, threat evaluation and gun assignment day and night, all-weather and under jamming. Quantity not disclosed.","src":"https://www.newsonair.gov.in/mod-to-procure-fire-control-radars-to-detect-air-borne-threats","cf":"high","cust":"Indian Army (Army Air Defence)","plat":"AD regiment gun and missile groups","vend":"BEL","val":2000,"valn":"~Rs 2,000 cr, moved 25 Jul 2025","qty":"","specs":[]},{"n":"Virupaksha","a":"Su-30MKI Super Sukhoi AESA","p":"ISR","d":"Air","r":"GaN-based airborne AESA fire control radar","dev":"LRDE Bengaluru (DRDO)","mfr":"industry consortium under the DcPP model","st":"Development","ioc":"-","note":"GaN AESA reported at around 2,400-2,500 T/R modules, intended to replace the N011M Bars on the Su-30MKI Super Sukhoi upgrade. Prototype fabrication and an industry consortium are reported in defence press only, with no official release located.","src":"https://organiser.org/2026/05/12/353046/bharat/virupaksha-aesa-radar-drdos-high-power-gan-system-to-replace-legacy-bars-radar-on-su-30mki-fleet/","cf":"low","cust":"Indian Air Force (planned)","plat":"Su-30MKI Super Sukhoi (planned)","vend":"Industry consortium, DcPP model","val":0,"valn":"","qty":"","specs":[["T/R modules","~2,400-2,500 (reported)"],["Technology","GaN AESA"]]},{"n":"Netra AEW&C Mk1","a":"DRDO AEW&CS on EMB-145I","p":"ISR","d":"Air","r":"Airborne early warning and control aircraft","dev":"CABS Bengaluru (DRDO)","mfr":"Embraer airframe; DRDO/CABS mission system, BEL sub-systems","st":"In service","ioc":"2017","note":"Three aircraft on Embraer ERJ-145 airframes carrying an indigenous active array with roughly 240-degree coverage and reported 250-375+ km detection. First aircraft handed over 14 February 2017, IOC October 2017, final operational clearance reported January 2026.","src":"https://en.wikipedia.org/wiki/DRDO_AEW%26CS","cf":"med","cust":"Indian Air Force","plat":"Embraer ERJ-145I, 3 aircraft","vend":"Embraer; BEL","val":0,"valn":"","qty":"3 aircraft","specs":[["Coverage","~240 deg"],["Detection","250-375+ km"],["Fleet","3 aircraft"]]},{"n":"Netra Mk2 AEW&C","a":"A321 AEW&C","p":"ISR","d":"Air","r":"Large AESA airborne early warning and control aircraft","dev":"CABS Bengaluru (DRDO)","mfr":"Airbus A321 airframes ex-Air India; BEL and HAL industry partners","st":"Development","ioc":"-","note":"CCS approved the programme 17 July 2025 at a reported Rs 19,000 crore for six ex-Air India A321s converted with a dorsal AESA array giving about 300-degree coverage plus a nose antenna. Conversion in France cleared by the DAC on 29 December 2025; first aircraft expected 2026-27 and full delivery by 2033-34. Supersedes the earlier A330-based AWACS India concept.","src":"https://en.wikipedia.org/wiki/DRDO_Netra_Mk2","cf":"med","cust":"Indian Air Force","plat":"Airbus A321 ex-Air India, 6 aircraft","vend":"Airbus airframes; BEL; HAL","val":19000,"valn":"~Rs 19,000 cr, CCS approval 17 Jul 2025","qty":"6 aircraft","specs":[["Coverage","~300 deg + nose array"],["Fleet","6 aircraft"],["Full delivery","2033-34"]]},{"n":"A-50EI PHALCON","a":"IL-76 Phalcon","p":"ISR","d":"Air","r":"Long-range L-band AESA AEW&C","dev":"IAI/ELTA (Israel) mission system; Beriev airframe integration","mfr":"Israel Aerospace Industries / ELTA on Beriev A-50 airframe","st":"In service","ioc":"2009","note":"Three aircraft carrying the ELTA EL/W-2090 conformal L-band AESA with 360-degree azimuth coverage. The IAF's highest-capability AEW&C asset and not indigenous. A two-aircraft follow-on has been reported for over a decade with no confirmed contract.","src":"https://www.globalsecurity.org/military/world/india/air-force-equipment-aew.htm","cf":"med","cust":"Indian Air Force","plat":"Beriev A-50 / Il-76, 3 aircraft","vend":"IAI ELTA; Beriev","val":0,"valn":"","qty":"3 aircraft","specs":[["Radar","EL/W-2090 L-band AESA"],["Coverage","360 deg"],["Fleet","3 aircraft"]]},{"n":"TAPAS BH-201","a":"Rustom-2","p":"ISR","d":"Joint","r":"MALE ISR unmanned aerial vehicle","dev":"ADE Bengaluru (DRDO)","mfr":"HAL (lead) and BEL","st":"Closed","ioc":"-","note":"Closed as a DRDO mission-mode project on 14 January 2024 after failing Joint Services QRs: 18 hours at 28,000 ft against a 24 h / 30,000 ft requirement, at 2,200 kg versus an 1,800 kg target. Development continues under ADE for improved endurance and altitude; reported service interest of 6 IAF and 4 Navy airframes.","src":"https://en.wikipedia.org/wiki/TAPAS-BH-201","cf":"med","cust":"Indian Army, Navy and Air Force (intended)","plat":"Ground control stations","vend":"HAL; BEL","val":0,"valn":"","qty":"","specs":[["Achieved","18 h at 28,000 ft"],["Required","24 h at 30,000 ft"],["Mass","2,200 kg vs 1,800 kg target"]]},{"n":"Archer-NG","a":"Rustom-1 successor","p":"ISR","d":"Joint","r":"Armed MALE ISR and strike UAV","dev":"ADE Bengaluru (DRDO)","mfr":"not reported","st":"Trials","ioc":"-","note":"Sized for ISR plus precision strike. Maiden flight reported in 2025 after extensive taxi trials, following slippage from an earlier pre-Aero India 2025 target. No production contract, quantity or value reported, and no official release on the maiden flight was located.","src":"https://idrw.org/archer-ng-indias-advanced-male-uav-gears-up-for-maiden-flight/","cf":"low","cust":"Tri-service (intended)","plat":"not reported","vend":"not reported","val":0,"valn":"","qty":"","specs":[]},{"n":"Drishti-10 Starliner","a":"Hermes 900 Starliner, Indian-built","p":"ISR","d":"Naval","r":"MALE maritime and land ISR UAV","dev":"Elbit Systems (Israel) original design, Indianised by Adani Defence","mfr":"Adani Defence & Aerospace, Hyderabad","st":"In service","ioc":"2024","note":"36-hour endurance, 450 kg payload, STANAG 4671 certified, built in Hyderabad with reported ~70% indigenous content. First Navy aircraft handed over January 2024, second 4 December 2024 at Porbandar; two delivered to the Army from June 2024. Contract value not disclosed; at least one airframe loss reported.","src":"https://www.business-standard.com/external-affairs-defence-security/news/adani-defence-delivers-2nd-drishti-10-starliner-surveillance-drone-to-navy-124120400689_1.html","cf":"med","cust":"Indian Navy and Indian Army","plat":"Porbandar (Navy); Bathinda (Army)","vend":"Adani Defence, Hyderabad; Elbit design","val":0,"valn":"","qty":"2 Navy + 2 Army delivered","specs":[["Endurance","36 h"],["Payload","450 kg"],["Certification","STANAG 4671"],["Indigenous content","~70%"]]},{"n":"MQ-9B","a":"SeaGuardian / SkyGuardian","p":"ISR","d":"Joint","r":"HALE armed ISR remotely piloted aircraft","dev":"General Atomics Aeronautical Systems (USA)","mfr":"General Atomics ASI; India MRO via GA Global India","st":"Ordered","ioc":"2024","note":"India signed for 31 aircraft on 15 October 2024 under a tri-service procurement, widely reported as 15 SeaGuardian for the Navy and 8 SkyGuardian each for Army and Air Force. The DSCA notification valued the package at up to $3.99bn, with reported final negotiation around $3.5bn plus a separate in-country depot MRO contract. The Navy has leased MQ-9Bs since 2020.","src":"https://www.newsonair.gov.in/india-us-deal-for-procurement-of-31-mq-9b-predator-drones","cf":"med","cust":"Indian Navy, Army and Air Force","plat":"Ground control stations; naval and land bases","vend":"General Atomics ASI; GA Global India MRO","val":0,"valn":"","qty":"31 aircraft ordered","specs":[["Aircraft","31"],["Navy / Army / IAF","15 / 8 / 8"],["Package value","up to $3.99bn (DSCA)"]]},{"n":"P-8I Neptune","a":"Poseidon, Indian variant","p":"ISR","d":"Naval","r":"Long-range maritime patrol and ASW/ISR aircraft","dev":"Boeing Defense, Space & Security (USA)","mfr":"Boeing; Indian content from BEL, HAL, Tata, Dynamatic","st":"In service","ioc":"2013","note":"Twelve aircraft with INAS 312 and INAS 316, from an 8-aircraft $2.1bn order in 2009 and a 4-aircraft $1.1bn order in 2016. Sensors include the Raytheon APY-10 surface search radar, Telephonics APS-143C(V)3 aft radar, CAE AN/ASQ-508A MAD and BEL Data Link II plus indigenous IFF. The DAC cleared six more on 12 February 2026, estimated at $3-4bn pending CCS approval.","src":"https://www.armyrecognition.com/news/aerospace-news/2026/india-approves-purchase-of-6-new-p-8i-neptune-maritime-patrol-aircraft-to-boost-indian-ocean-coverage","cf":"med","cust":"Indian Navy","plat":"INAS 312 (INS Rajali); INAS 316 (INS Hansa)","vend":"Boeing; BEL; HAL; Tata; Dynamatic","val":0,"valn":"","qty":"12 in service, 6 more cleared","specs":[["In service","12 aircraft"],["Surface radar","Raytheon APY-10"],["MAD","CAE AN/ASQ-508A"],["Data link","BEL Link II"]]},{"n":"RISAT / EOS SAR series","a":"RISAT-1, RISAT-2B/2BR1, EOS-01, EOS-04, EOS-09","p":"ISR","d":"Space","r":"All-weather SAR imaging reconnaissance satellites","dev":"ISRO — SAC Ahmedabad payloads, URSC Bengaluru bus","mfr":"ISRO, with growing private participation","st":"In service","ioc":"2009","note":"Indigenous C-band (RISAT-1/EOS-04) and X-band (RISAT-2B series/EOS-01) SAR satellites giving day-night all-weather imaging. RISAT-2 was fast-tracked after the 2008 Mumbai attacks explicitly for border surveillance. Roughly four remain operational; the EOS-09/RISAT-1B relaunch failed on PSLV-C61 on 18 May 2025 due to a third-stage anomaly.","src":"https://en.wikipedia.org/wiki/RISAT","cf":"med","cust":"Tri-service and national agencies","plat":"PSLV launches; ISRO ground segment","vend":"ISRO with private participation","val":0,"valn":"","qty":"","specs":[["Bands","C-band and X-band SAR"],["Operational","~4 satellites"]]},{"n":"Cartosat-3","a":"-","p":"ISR","d":"Space","r":"Very-high-resolution optical imaging satellite","dev":"ISRO — SAC Ahmedabad payloads, URSC Bengaluru bus","mfr":"ISRO","st":"In service","ioc":"2019","note":"Launched 27 November 2019 on PSLV-C47 into a 509 km sun-synchronous orbit; 1,625 kg carrying a 0.25 m panchromatic sensor and 1 m four-band multispectral camera with agile off-nadir steering, 1-3 day revisit. Framed by ISRO as cartographic, but its resolution makes it India's sharpest publicly acknowledged imaging asset.","src":"https://www.eoportal.org/satellite-missions/cartosat-3","cf":"high","cust":"National agencies (dual use)","plat":"PSLV-C47; 509 km SSO","vend":"ISRO","val":0,"valn":"","qty":"","specs":[["Panchromatic","0.25 m"],["Multispectral","1 m, 4 band"],["Mass","1,625 kg"],["Revisit","1-3 days"]]},{"n":"SBS-3","a":"Space Based Surveillance-3","p":"ISR","d":"Space","r":"Military ISR satellite constellation programme","dev":"Defence Space Agency (HQ IDS, MoD), with ISRO","mfr":"ISRO (21 satellites) plus three Indian private firms (31 satellites)","st":"Development","ioc":"-","note":"CCS-approved programme worth Rs 26,968 crore for 52 surveillance satellites in LEO and GEO, led by the Defence Space Agency to cut revisit times and improve resolution over China, Pakistan and the Indian Ocean Region. First satellite targeted around April 2026, constellation complete by end-2029. Approval date is reported variously as October 2023 and October 2024.","src":"https://vajiramandravi.com/current-affairs/space-based-surveillance-iii-programme/","cf":"med","cust":"Defence Space Agency","plat":"LEO and GEO constellation","vend":"ISRO (21 sats); three Indian private firms (31 sats)","val":26968,"valn":"Rs 26,968 cr, CCS approved","qty":"52 satellites","specs":[["Satellites","52"],["ISRO / private","21 / 31"],["Complete by","end-2029"]]}];
+(function(){
+const $=id=>document.getElementById(id);
+const tgl=$("tgl");
+function setT(t){document.documentElement.setAttribute("data-theme",t);try{localStorage.setItem("c4-theme",t)}catch(e){}}
+try{setT(localStorage.getItem("c4-theme")||"light");}catch(e){document.documentElement.setAttribute("data-theme","light");}
+tgl.addEventListener("click",()=>{const c=document.documentElement.getAttribute("data-theme");
+  const d=c?c==="dark":matchMedia("(prefers-color-scheme:dark)").matches;setT(d?"light":"dark");});
+
+const PIL={C2:"C2 & battle mgmt",COM:"Communications",ISR:"ISR",EW:"EW & SIGINT"};
+const DOM=["Land","Naval","Air","Space","Joint"];
+const STO=["In service","Ordered","Trials","Development","Closed","Foreclosed"];
+const SCOL={"In service":"--s1","Ordered":"--s2","Trials":"--s3","Development":"--s4","Closed":"--s0","Foreclosed":"--s0"};
+const SINK={"In service":"--ground","Ordered":"--ground","Trials":"--ink","Development":"--ink","Closed":"--ground","Foreclosed":"--ground"};
+const LADDER=["Development","Trials","Ordered","In service"];
+const nr=v=>/^(-|not reported|not applicable|)$/i.test(v||"");
+const esc=v=>nr(v)?'<span style="color:var(--ink-3);font-style:italic">not reported</span>':v;
+
+const ORG=[[/\bBEL\b|Bharat Electronics/i,"BEL"],[/ISRO|URSC|SAC Ahmedabad/i,"ISRO"],[/\bHAL\b/i,"HAL"],
+ [/BSNL/i,"BSNL"],[/\bITI\b/i,"ITI Ltd"],[/Adani/i,"Adani Defence"],[/Boeing/i,"Boeing"],
+ [/General Atomics/i,"General Atomics"],[/IAI|ELTA|Beriev/i,"IAI / ELTA"],[/Embraer/i,"Embraer"],[/Airbus/i,"Airbus"],
+ [/Ordnance|Khadki|MTPF|AVNL/i,"OFB / AVNL"],[/ECIL/i,"ECIL"],[/\bBDL\b/i,"BDL"],[/Tata/i,"Tata"],[/Elbit/i,"Adani Defence"],
+ [/not applicable|not reported/i,"Not reported"]];
+const LAB=[[/LRDE/i,"LRDE"],[/DLRL/i,"DLRL"],[/DARE|CASDIC/i,"DARE / CASDIC"],[/CABS/i,"CABS"],[/CAIR/i,"CAIR"],
+ [/DEAL/i,"DEAL"],[/\bADE\b/i,"ADE"],[/NSTL|NPOL/i,"NSTL / NPOL"],[/DRDL/i,"DRDL"],[/Jodhpur/i,"DL Jodhpur"],
+ [/WESEE/i,"WESEE"],[/ISRO|SAC Ahmedabad|URSC/i,"ISRO"],[/Defence Space Agency/i,"Def Space Agency"],
+ [/Indian Air Force|\bIAF\b/i,"IAF in-house"],[/Indian Army|Corps of Signals/i,"Indian Army"],[/Indian Navy/i,"Indian Navy"],
+ [/Elbit|IAI|ELTA|Boeing|General Atomics|Beriev/i,"Foreign OEM"],[/DoT|MoD/i,"MoD / DoT"],
+ [/DRDO/i,"DRDO (lab n/r)"],[/not reported/i,"Not reported"]];
+const tag=(s,L)=>{s=s||"";let best=null,at=1e9;for(const[re,n] of L){const m=re.exec(s);if(m&&m.index<at){at=m.index;best=n;}}return best||"Other";};
+REC.forEach((r,i)=>{r.i=i;r.M=tag(r.mfr,ORG);r.L=tag(r.dev,LAB);
+  r.cmpl=[nr(r.dev)?0:1,nr(r.mfr)?0:1,nr(r.ioc)?0:1,r.val?1:0];
+  r.score=r.cmpl.reduce((a,b)=>a+b,0);});
+const VMAX=Math.max(...REC.map(r=>r.val));
+const YRS=(()=>{const y=REC.map(r=>/^(\d{4})$/.test(r.ioc)?+r.ioc:null).filter(Boolean);
+  const lo=Math.min(...y),hi=Math.max(...y);const a=[];for(let i=lo;i<=hi;i++)a.push(i);return a;})();
+
+/* ---------- readout ---------- */
+
+$("hcnt").textContent=REC.length+" products";
+const labs=new Set(REC.map(r=>r.L).filter(x=>!["Not reported","Other","Foreign OEM"].includes(x)));
+const primes=new Set(REC.map(r=>r.M).filter(x=>x!=="Not reported"));
+const totalVal=REC.reduce((a,r)=>a+r.val,0);
+$("readout").innerHTML=[
+ [REC.length,"Products","4 pillars, 5 domains"],
+ [REC.filter(r=>r.st==="In service").length,"In service","of "+REC.length+" products"],
+ [primes.size,"Prime manufacturers","incl. foreign OEMs"],
+ [labs.size,"Developing agencies","DRDO labs + service HQs"],
+ ["Rs "+(totalVal/1000).toFixed(1)+"k cr","Disclosed contract value","across "+REC.filter(r=>r.val).length+" products"],
+ [REC.filter(r=>r.cf==="high").length+"/"+REC.length,"Official-source entries","PIB, MoD, DRDO, vendor"]
+].map(x=>`<div><div class="v">${x[0]}</div><div class="k lab">${x[1]}</div><div class="n">${x[2]}</div></div>`).join("");
+
+/* ---------- catalogue ---------- */
+let f={q:"",p:null,d:null,s:null},view=[];
+function card(r){
+  return `<button class="card" data-i="${r.i}">
+    <div class="row1"><div><div class="nm">${r.n}</div>${nr(r.a)?"":`<div class="aka">${r.a}</div>`}</div>
+      <span class="st" style="background:var(${SCOL[r.st]});color:var(${SINK[r.st]})">${r.st}</span></div>
+    <div class="role">${r.r}</div>
+    <div class="foot"><span class="tag pil">${r.p}</span><span class="tag">${r.d}</span>
+      <span class="mfr" title="${r.mfr}">${r.M}</span></div></button>`;
+}
+function draw(){
+  view=REC.filter(r=>{
+    if(f.p&&r.p!==f.p)return false;
+    if(f.d&&r.d!==f.d)return false;
+    if(f.s){if(f.s==="Closed"){if(!["Closed","Foreclosed"].includes(r.st))return false;}else if(r.st!==f.s)return false;}
+    if(f.q){const hay=[r.n,r.a,r.r,r.dev,r.mfr,r.cust,r.plat,r.vend,r.note,r.p,r.d].join(" ").toLowerCase();
+      if(!f.q.split(/\s+/).every(t=>hay.includes(t)))return false;}
+    return true;});
+  $("rc").textContent=view.length;$("rt").textContent=REC.length;
+  $("cat").innerHTML=view.length?view.map(card).join("")
+    :`<div class="empty">No product matches these filters. The catalogue holds ${REC.length} systems.</div>`;
+  $("cat").querySelectorAll(".card").forEach(b=>b.addEventListener("click",()=>open(+b.dataset.i)));
+}
+function mkF(el,items,key){el.insertAdjacentHTML("beforeend",items.map(i=>`<button class="fb" data-k="${key}" data-v="${i[0]}" aria-pressed="false">${i[1]}</button>`).join(""));}
+mkF($("fpil"),Object.keys(PIL).map(k=>[k,k]),"p");
+mkF($("fdom"),DOM.map(d=>[d,d]),"d");
+mkF($("fst"),[["In service","In svc"],["Ordered","Ordered"],["Trials","Trials"],["Development","Dev"],["Closed","Ended"]],"s");
+document.querySelectorAll(".fb[data-k]").forEach(b=>b.addEventListener("click",()=>{
+  const k=b.dataset.k,v=b.dataset.v,on=f[k]===v;f[k]=on?null:v;
+  document.querySelectorAll(`.fb[data-k="${k}"]`).forEach(x=>x.setAttribute("aria-pressed",(!on&&x.dataset.v===v)?"true":"false"));
+  draw();}));
+$("q").addEventListener("input",e=>{f.q=e.target.value.toLowerCase();draw();});
+$("clr").addEventListener("click",()=>{f={q:"",p:null,d:null,s:null};$("q").value="";
+  document.querySelectorAll(".fb[data-k]").forEach(x=>x.setAttribute("aria-pressed","false"));draw();});
+
+/* ---------- product modal ---------- */
+const ov=$("ov"),mod=$("mod");let cur=null;
+function open(i){cur=i;render();ov.classList.add("on");document.body.style.overflow="hidden";mod.querySelector(".nb")?.focus();}
+function close(){ov.classList.remove("on");document.body.style.overflow="";cur=null;}
+function step(d){const pos=view.findIndex(r=>r.i===cur);if(pos<0)return;
+  const nx=view[(pos+d+view.length)%view.length];cur=nx.i;render();mod.scrollIntoView({block:"start"});}
+ov.addEventListener("click",e=>{if(e.target===ov)close();});
+addEventListener("keydown",e=>{if(!ov.classList.contains("on"))return;
+  if(e.key==="Escape")close(); if(e.key==="ArrowRight")step(1); if(e.key==="ArrowLeft")step(-1);});
+
+function render(){
+  const r=REC[cur];
+  const tiles=(r.specs.length?r.specs:[["Pillar",PIL[r.p]],["Domain",r.d]]).slice(0,4)
+    .map(s=>`<div class="tile"><div class="k">${s[0]}</div><div class="v">${s[1]}</div></div>`).join("");
+  const ladIdx=LADDER.indexOf(r.st);
+  const lad=["Closed","Foreclosed"].includes(r.st)
+    ? `<div class="lad"><div class="on" style="flex:1">Programme ${r.st.toLowerCase()}</div></div>`
+    : `<div class="lad">${LADDER.map((s,k)=>`<div class="${k===ladIdx?"on":(ladIdx>k?"done":"")}">${s}</div>`).join("")}</div>`;
+  const val=r.val?`<div class="blk"><h4>Disclosed contract value</h4>
+      <div style="font-family:var(--mono);font-size:20px;font-weight:600">Rs ${r.val.toLocaleString("en-IN")} cr</div>
+      <div class="vbar"><i style="width:${Math.max(1.5,r.val/VMAX*100)}%"></i></div>
+      <div class="vsc"><span>0</span><span>largest in catalogue &mdash; Rs ${VMAX.toLocaleString("en-IN")} cr</span></div>
+      <p style="font-size:12px;margin-top:7px;color:var(--ink-3);font-family:var(--mono)">${r.valn}</p></div>`
+    : `<div class="blk"><h4>Disclosed contract value</h4><p style="font-size:13px">No contract value is disclosed in public sourcing for this product.</p></div>`;
+  const yr=/^(\d{4})$/.test(r.ioc)?+r.ioc:null;
+  const ystrip=yr?`<div class="blk"><h4>Position in the programme record</h4>
+      <div class="yst">${YRS.map(y=>`<span class="${y===yr?"on":""}" title="${y}"></span>`).join("")}</div>
+      <div class="vsc"><span>${YRS[0]}</span><span style="color:var(--acc)">${yr}</span><span>${YRS[YRS.length-1]}</span></div></div>`:"";
+  mod.innerHTML=`
+  <div class="mhd">
+    <div><div class="eb"><span class="tag pil">${PIL[r.p]}</span><span class="tag">${r.d}</span>
+      <span class="st" style="background:var(${SCOL[r.st]});color:var(${SINK[r.st]})">${r.st}</span>
+      <span class="cf cf-${r.cf}">${r.cf} confidence</span></div>
+      <h3 id="mtitle">${r.n}</h3>${nr(r.a)?"":`<div class="aka">${r.a}</div>`}</div>
+    <div class="mx2"><button class="nb" id="prv" aria-label="Previous product">&#8249;</button>
+      <button class="nb" id="nxt" aria-label="Next product">&#8250;</button>
+      <button class="nb" id="cls" aria-label="Close">&#10005;</button></div>
+  </div>
+  <div class="tiles">${tiles}</div>
+  <div class="mbody">
+    <div class="mcol">
+      <div class="blk"><h4>What it is</h4><p class="lead">${r.r}.</p><p style="margin-top:8px">${r.note}</p></div>
+      ${r.specs.length>4?`<div class="blk"><h4>Further reported characteristics</h4><dl class="sp">${r.specs.slice(4).map(s=>`<dt>${s[0]}</dt><dd>${s[1]}</dd>`).join("")}</dl></div>`:""}
+      ${r.specs.length?"":`<div class="blk"><h4>Reported characteristics</h4><p style="font-size:13px">No quantitative specification is disclosed in public sourcing for this product. The tiles above show its classification instead.</p></div>`}
+      ${val}
+    </div>
+    <div class="mcol">
+      <div class="blk"><h4>Supply chain</h4><div class="chain">
+        <div class="node ${nr(r.dev)?"nr":""}"><div class="r">Developer</div><div class="t">${esc(r.dev)}</div></div>
+        <div class="arw">&#9662;</div>
+        <div class="node ${nr(r.mfr)?"nr":""}"><div class="r">Prime manufacturer</div><div class="t">${esc(r.mfr)}</div></div>
+        <div class="arw">&#9662;</div>
+        <div class="node ${(nr(r.vend)||r.vend===r.mfr)?"nr":""}"><div class="r">Vendors &amp; partners</div><div class="t">${nr(r.vend)?esc(r.vend):(r.vend===r.mfr?'<span style="color:var(--ink-3);font-style:italic">no additional vendors reported</span>':r.vend)}</div></div>
+      </div></div>
+      <div class="blk"><h4>Customer</h4><p style="font-size:13.5px;color:var(--ink)">${esc(r.cust)}</p></div>
+      <div class="blk"><h4>Used in / fitted to</h4><p style="font-size:13.5px;color:var(--ink)">${esc(r.plat)}</p></div>
+      ${r.qty?`<div class="blk"><h4>Quantity</h4><p style="font-size:13.5px;color:var(--ink)">${r.qty}</p></div>`:""}
+      <div class="blk"><h4>Programme status</h4>${lad}</div>
+      ${ystrip}
+    </div>
+  </div>
+  <div class="mfoot">
+    <span>Completeness <span class="pips">${r.cmpl.map(c=>`<span class="pip ${c?"on":""}"></span>`).join("")}</span>${r.score}/4 &mdash; developer, prime, date, value</span>
+    <a href="${r.src}" target="_blank" rel="noopener" style="margin-left:auto">primary source &#8599;</a>
+  </div>`;
+  $("cls").onclick=close; $("prv").onclick=()=>step(-1); $("nxt").onclick=()=>step(1);
+}
+draw();
+/* ---- manufacturer bars ---- */
+const mc={};REC.forEach(r=>mc[r.M]=(mc[r.M]||0)+1);
+const mArr=Object.entries(mc).sort((a,b)=>b[1]-a[1]);
+const mMax=mArr[0][1];$("mmax").textContent=mMax+" systems";
+$("mbars").innerHTML=mArr.map(([n,v])=>`<div class="brow"><span class="nm">${n}</span>
+  <span class="tr"><span class="fi" style="width:${v/mMax*100}%"></span></span>
+  <span class="vv">${v}</span></div>`).join("");
+
+/* ---- developer x prime matrix ---- */
+const cols=mArr.map(x=>x[0]).filter(x=>x!=="Other").slice(0,7);
+const lc={};REC.forEach(r=>lc[r.L]=(lc[r.L]||0)+1);
+const rows=Object.entries(lc).sort((a,b)=>b[1]-a[1]).slice(0,11).map(x=>x[0]);
+let mxMax=0;const grid={};
+REC.forEach(r=>{const k=r.L+"|"+r.M;grid[k]=(grid[k]||0)+1;if(grid[k]>mxMax)mxMax=grid[k];});
+$("mx").innerHTML=`<thead><tr><th class="rh"></th>${cols.map(c=>`<th>${c.replace(/ \/ /g,"<br>")}</th>`).join("")}<th>Other</th></tr></thead><tbody>`+
+ rows.map(rw=>{
+   const others=REC.filter(r=>r.L===rw&&!cols.includes(r.M)).length;
+   return `<tr><th class="rh">${rw}</th>`+cols.map(c=>{
+     const v=grid[rw+"|"+c]||0;
+     return `<td class="${v?"":"z"}"><div class="cell" style="background:${v?`color-mix(in srgb, var(--acc) ${Math.round(14+v/mxMax*72)}%, var(--panel))`:"var(--sunk)"};color:${v/mxMax>.5?"var(--ground)":"var(--ink)"}">${v||"·"}</div></td>`;
+   }).join("")+`<td class="${others?"":"z"}"><div class="cell" style="background:var(--sunk)">${others||"·"}</div></td></tr>`;
+ }).join("")+"</tbody>";
+
+/* ---- source composition strip ---- */
+const CLS=r=>{const u=r.src;
+  if(/pib\.gov\.in|ddnews|newsonair/.test(u))return "Government releases";
+  if(/drdo\.gov\.in/.test(u))return "DRDO publications";
+  if(/bel-india/.test(u))return "Manufacturer literature";
+  if(/eoportal/.test(u))return "ESA eoPortal";
+  if(/wikipedia/.test(u))return "Reference compilations";
+  return "Defence trade press";};
+const mix={};REC.forEach(r=>{const k=CLS(r);mix[k]=(mix[k]||0)+1;});
+$("srcmix").innerHTML=Object.entries(mix).sort((a,b)=>b[1]-a[1])
+  .map(([k,v])=>`<div><b>${v}</b> ${k}</div>`).join("");
+
+/* ---- sources ---- */
+const sc={};REC.forEach(r=>{const h=new URL(r.src).hostname.replace(/^www\./,"");sc[h]=(sc[h]||0)+1;});
+$("srcs").innerHTML=Object.entries(sc).sort((a,b)=>b[1]-a[1])
+  .map(([h,n])=>`<div style="font-family:var(--mono);font-size:11.5px;padding:4px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;break-inside:avoid"><span style="color:var(--ink-2)">${h}</span><span style="color:var(--acc)">${n}</span></div>`).join("");
+
+
+})();
+</script>
